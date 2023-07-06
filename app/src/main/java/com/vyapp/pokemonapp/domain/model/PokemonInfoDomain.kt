@@ -4,6 +4,6 @@ data class PokemonInfoDomain(
     val name : String?,
     val weight : Int?,
     val height : Int?,
-    val types : List<TypeDomain>?,
+    val type : PokemonTypeDomain?,
     val sprites : SpritesDomain?
     )

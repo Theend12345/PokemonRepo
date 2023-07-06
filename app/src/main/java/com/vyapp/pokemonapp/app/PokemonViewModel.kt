@@ -2,6 +2,8 @@ package com.vyapp.pokemonapp.app
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import com.vyapp.pokemonapp.domain.model.PokemonDomain
 import com.vyapp.pokemonapp.domain.model.PokemonInfoDomain
 import com.vyapp.pokemonapp.domain.model.PokemonResultDomain
 import com.vyapp.pokemonapp.domain.usecase.GetPokemonRemoteListUseCase
@@ -15,9 +17,9 @@ class PokemonViewModel(
     val getPokemonRemoteListUseCase: GetPokemonRemoteListUseCase,
     val getPokemonRemoteUseCase: GetPokemonRemoteUseCase
 ) : ViewModel() {
-    private val _pokemonRemoteList = MutableStateFlow<UIState<PokemonResultDomain>>(UIState.Loading)
+    private val _pokemonRemoteList = MutableStateFlow<UIState<PagingData<PokemonDomain>>>(UIState.Loading)
 
-    val pokemonRemoteList: StateFlow<UIState<PokemonResultDomain>>
+    val pokemonRemoteList: StateFlow<UIState<PagingData<PokemonDomain>>>
         get() = _pokemonRemoteList.asStateFlow()
 
     private val _pokemonRemote = MutableStateFlow<UIState<PokemonInfoDomain>>(UIState.Loading)

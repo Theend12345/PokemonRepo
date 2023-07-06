@@ -9,21 +9,17 @@ fun PokemonInfo.toPokemonInfoDomain() =
         this.name,
         this.weight,
         this.height,
-        this.types?.toListTypeDomain(),
+        this.types?.toPokemonTypeDomain(),
         this.sprites?.toSpritesDomain()
     )
 
 fun Sprites.toSpritesDomain() = SpritesDomain(this.frontDefault)
 
-fun Type.toTypeDomain() = TypeDomain(this.name)
-
 fun List<Pokemon>.toListPokemonDomain() = this.map {
     it.toPokemonDomain()
 }
 
-fun List<Type>.toListTypeDomain() = this.map {
-    it.toTypeDomain()
-}
+fun List<Type>.toPokemonTypeDomain() = PokemonTypeDomain(this.get(0).type?.name)
 
 fun PokemonResult.toPokemonResultDomain() =
     PokemonResultDomain(this.count, this.next, this.previous, this.results.toListPokemonDomain())

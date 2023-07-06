@@ -12,10 +12,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.vyapp.pokemonapp.R
-import com.vyapp.pokemonapp.databinding.FragmentPokemonListBinding
+import com.bumptech.glide.Glide
+import com.vyapp.pokemonapp.databinding.FragmentPokemonBinding
 import com.vyapp.pokemonapp.domain.model.PokemonInfoDomain
-import com.vyapp.pokemonapp.domain.model.PokemonResultDomain
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,8 +23,8 @@ class PokemonFragment : Fragment() {
     @Inject
     lateinit var pokemonViewModelFactory: PViewModelFactory
 
-    private val binding: FragmentPokemonListBinding by lazy {
-        FragmentPokemonListBinding.inflate(layoutInflater)
+    private val binding: FragmentPokemonBinding by lazy {
+        FragmentPokemonBinding.inflate(layoutInflater)
     }
 
     private val viewModel: PokemonViewModel by lazy {
@@ -58,7 +57,7 @@ class PokemonFragment : Fragment() {
 
                         }
                         is UIState.Success<PokemonInfoDomain> -> {
-                            Toast.makeText(requireContext(), it.data.toString(), Toast.LENGTH_LONG).show()
+                            bind(it.data)
                             Log.d("pokemons", it.data.toString())
                         }
                         is UIState.Error -> {
@@ -69,6 +68,16 @@ class PokemonFragment : Fragment() {
                     }
                 }
             }
+        }
+    }
+
+    private fun bind(data: PokemonInfoDomain){
+        with(binding){
+            pokemonName.text = data.name
+            pokemonHeight.text = data.height.toString()
+            pokemonWeight.text = data.weight.toString()
+            pokemonType.text = data.type?.name
+            Glide.with(requireContext()).load(data.sprites?.frontDefault).into(pokemonImg)
         }
     }
 
