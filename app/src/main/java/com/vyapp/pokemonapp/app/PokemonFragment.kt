@@ -12,9 +12,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.vyapp.pokemonapp.R
 import com.vyapp.pokemonapp.databinding.FragmentPokemonBinding
 import com.vyapp.pokemonapp.domain.model.PokemonInfoDomain
+import com.vyapp.pokemonapp.util.heightString
+import com.vyapp.pokemonapp.util.typeString
+import com.vyapp.pokemonapp.util.weightString
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,6 +34,14 @@ class PokemonFragment : Fragment() {
 
     private val viewModel: PokemonViewModel by lazy {
         ViewModelProvider(requireActivity(), pokemonViewModelFactory)[PokemonViewModel::class.java]
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        binding.backBtn.setOnClickListener{
+            findNavController().navigate(R.id.action_pokemonFragment_to_pokemonListFragment)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,9 +67,10 @@ class PokemonFragment : Fragment() {
                 viewModel.pokemonRemote.collect{
                     when (it) {
                         is UIState.Loading -> {
-
+                            binding.progressBar.visibility = View.VISIBLE
                         }
                         is UIState.Success<PokemonInfoDomain> -> {
+                            binding.progressBar.visibility = View.GONE
                             bind(it.data)
                             Log.d("pokemons", it.data.toString())
                         }
@@ -64,7 +78,6 @@ class PokemonFragment : Fragment() {
                             Toast.makeText(requireContext(), it.e.message, Toast.LENGTH_LONG).show()
                             Log.d("pokemons", it.e.message.toString())
                         }
-
                     }
                 }
             }
@@ -73,13 +86,14 @@ class PokemonFragment : Fragment() {
 
     private fun bind(data: PokemonInfoDomain){
         with(binding){
-            pokemonName.text = data.name
-            pokemonHeight.text = data.height.toString()
-            pokemonWeight.text = data.weight.toString()
-            pokemonType.text = data.type?.name
+            pokemonName.text = data.name?.uppercase()
+            pokemonHeight.text = data.height?.let { heightString(it) }
+            pokemonWeight.text = data.weight?.let { weightString(it) }
+            pokemonType.text = data.type?.name?.let { typeString(it) }
             Glide.with(requireContext()).load(data.sprites?.frontDefault).into(pokemonImg)
         }
     }
+
 
 
 }

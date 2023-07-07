@@ -17,12 +17,15 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import androidx.paging.PagingDataAdapter
+import androidx.paging.map
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.vyapp.pokemonapp.R
 import com.vyapp.pokemonapp.databinding.FragmentPokemonListBinding
 import com.vyapp.pokemonapp.domain.model.PokemonDomain
+import com.vyapp.pokemonapp.domain.model.PokemonEntityDomain
+import com.vyapp.pokemonapp.util.toPokemonDomainEntity
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -47,6 +50,7 @@ class PokemonListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (activity?.applicationContext as App).appComponent.pokemonListInject(this@PokemonListFragment)
+
         viewModel.fetchPokemonRemoteList()
     }
 
@@ -66,12 +70,13 @@ class PokemonListFragment : Fragment() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-                viewModel.pokemonRemoteList.collect {
+                viewModel.pokemonList.collect {
                     when (it) {
                         is UIState.Loading -> {
-
+                            binding.progressBar.visibility = View.VISIBLE
                         }
                         is UIState.Success<PagingData<PokemonDomain>> -> {
+                            binding.progressBar.visibility = View.GONE
                             adapter.submitData(it.data)
                             Log.d("pokemons", it.data.toString())
                         }
@@ -85,6 +90,7 @@ class PokemonListFragment : Fragment() {
         }
     }
 
+    //костыль
     private fun toPokemonFragment(name: String) {
         val nameBundle: Bundle = bundleOf("pokemonName" to name)
         findNavController().navigate(R.id.action_pokemonListFragment_to_pokemonFragment, nameBundle)

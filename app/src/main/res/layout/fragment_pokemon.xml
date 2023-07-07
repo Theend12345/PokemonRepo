@@ -3,12 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/itemback"
     tools:context=".app.PokemonFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_margin="20dp"
         android:layout_height="wrap_content"
+        android:layout_margin="20dp"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -16,23 +17,28 @@
             android:layout_width="300dp"
             android:layout_height="230dp"
             android:layout_gravity="center"
-            android:layout_marginVertical="50dp" />
+            android:layout_marginVertical="50dp"
+            android:background="@drawable/img_background" />
 
         <TextView
             android:id="@+id/pokemon_name"
+            style="@style/name_text_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginHorizontal="50dp" />
 
         <TextView
             android:id="@+id/pokemon_type"
+            style="@style/name_text_style"
             android:layout_width="wrap_content"
-            android:layout_marginTop="30dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="50dp" />
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginTop="30dp" />
 
         <TextView
             android:id="@+id/pokemon_weight"
+            style="@style/name_text_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="50dp"
@@ -40,6 +46,7 @@
 
         <TextView
             android:id="@+id/pokemon_height"
+            style="@style/name_text_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="50dp"
@@ -47,12 +54,21 @@
 
     </LinearLayout>
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@android:style/Widget.ProgressBar.Large"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/back_btn"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="right|bottom"
         android:layout_margin="50dp"
+        android:backgroundTint="@color/yellow"
+        android:src="@drawable/ic_back_foreground"
         tools:ignore="ContentDescription,RtlHardcoded" />
 
 

@@ -3,24 +3,30 @@ package com.vyapp.pokemonapp.app
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
 import com.vyapp.pokemonapp.domain.model.PokemonDomain
+import com.vyapp.pokemonapp.domain.model.PokemonEntityDomain
 import com.vyapp.pokemonapp.domain.model.PokemonInfoDomain
-import com.vyapp.pokemonapp.domain.model.PokemonResultDomain
+import com.vyapp.pokemonapp.domain.usecase.GetPokemonListOfflineUseCase
 import com.vyapp.pokemonapp.domain.usecase.GetPokemonRemoteListUseCase
 import com.vyapp.pokemonapp.domain.usecase.GetPokemonRemoteUseCase
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.vyapp.pokemonapp.domain.usecase.SavePokemonUseCase
+import com.vyapp.pokemonapp.util.toPokemonDomainEntity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class PokemonViewModel(
     val getPokemonRemoteListUseCase: GetPokemonRemoteListUseCase,
-    val getPokemonRemoteUseCase: GetPokemonRemoteUseCase
+    val getPokemonRemoteUseCase: GetPokemonRemoteUseCase,
+    val savePokemonUseCase: SavePokemonUseCase,
+    val getPokemonListOfflineUseCase: GetPokemonListOfflineUseCase
 ) : ViewModel() {
-    private val _pokemonRemoteList = MutableStateFlow<UIState<PagingData<PokemonDomain>>>(UIState.Loading)
+    private val _pokemonList = MutableStateFlow<UIState<PagingData<PokemonDomain>>>(UIState.Loading)
 
-    val pokemonRemoteList: StateFlow<UIState<PagingData<PokemonDomain>>>
-        get() = _pokemonRemoteList.asStateFlow()
+    val pokemonList: StateFlow<UIState<PagingData<PokemonDomain>>>
+        get() = _pokemonList.asStateFlow()
 
     private val _pokemonRemote = MutableStateFlow<UIState<PokemonInfoDomain>>(UIState.Loading)
 
@@ -44,13 +50,39 @@ class PokemonViewModel(
     fun fetchPokemonRemoteList() {
         viewModelScope.launch {
             try {
-                val data = getPokemonRemoteListUseCase.execute()
+                val data = getPokemonRemoteListUseCase.execute().cachedIn(viewModelScope)
                 data.collect {
-                    _pokemonRemoteList.value = UIState.Success(it)
+
+                    //костыль
+                    it.map { pokemon ->
+                       addPokemon(pokemon.toPokemonDomainEntity())
+                    }
+
+
+                    _pokemonList.value = UIState.Success(it)
                 }
             } catch (e: Throwable) {
-                _pokemonRemoteList.value = UIState.Error(e)
+                _pokemonList.value = UIState.Error(e)
             }
+        }
+    }
+
+    fun fetchPokemonLocalList() {
+        viewModelScope.launch {
+            try {
+                val data = getPokemonListOfflineUseCase.execute().cachedIn(viewModelScope)
+                data.collect {
+                    _pokemonList.value = UIState.Success(it)
+                }
+            } catch (e: Throwable) {
+                _pokemonList.value = UIState.Error(e)
+            }
+        }
+    }
+
+    fun addPokemon(entity: PokemonEntityDomain) {
+        viewModelScope.launch(Dispatchers.IO) {
+            savePokemonUseCase.execute(entity)
         }
     }
 
