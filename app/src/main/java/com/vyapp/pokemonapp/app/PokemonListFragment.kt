@@ -17,15 +17,12 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import androidx.paging.PagingDataAdapter
-import androidx.paging.map
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.vyapp.pokemonapp.R
 import com.vyapp.pokemonapp.databinding.FragmentPokemonListBinding
 import com.vyapp.pokemonapp.domain.model.PokemonDomain
-import com.vyapp.pokemonapp.domain.model.PokemonEntityDomain
-import com.vyapp.pokemonapp.util.toPokemonDomainEntity
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -73,16 +70,14 @@ class PokemonListFragment : Fragment() {
                 viewModel.pokemonList.collect {
                     when (it) {
                         is UIState.Loading -> {
-                            binding.progressBar.visibility = View.VISIBLE
+
                         }
                         is UIState.Success<PagingData<PokemonDomain>> -> {
                             binding.progressBar.visibility = View.GONE
                             adapter.submitData(it.data)
-                            Log.d("pokemons", it.data.toString())
                         }
                         is UIState.Error -> {
-                            Toast.makeText(requireContext(), it.e.message, Toast.LENGTH_LONG).show()
-                            Log.d("pokemons", it.e.message.toString())
+
                         }
                     }
                 }

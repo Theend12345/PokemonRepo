@@ -1,10 +1,9 @@
 package com.vyapp.pokemonapp.domain.usecase
 
-import androidx.paging.cachedIn
-import com.vyapp.pokemonapp.domain.repository.RemoteRepository
+import com.vyapp.pokemonapp.domain.repository.PokemonRepository
 import javax.inject.Inject
 
-class GetPokemonRemoteListUseCase @Inject constructor(val repository: RemoteRepository) {
+class GetPokemonRemoteListUseCase @Inject constructor(val repository: PokemonRepository) {
 
     fun execute() = repository.getPokemonResult()
 

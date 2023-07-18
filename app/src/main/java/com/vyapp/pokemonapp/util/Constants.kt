@@ -5,3 +5,4 @@ const val GET_POKEMON = "pokemon/"
 const val LIMIT = 30
 const val KG = "kg"
 const val CM = "cm"
+const val FIRST_PAGE = 1

@@ -4,7 +4,7 @@ import com.vyapp.pokemonapp.data.local.model.PokemonEntity
 import com.vyapp.pokemonapp.data.remote.model.*
 import com.vyapp.pokemonapp.domain.model.*
 
-fun Pokemon.toPokemonDomain() = PokemonDomain(this.name)
+fun Pokemon.toPokemonDomain() = PokemonDomain(0, this.name)
 fun PokemonInfo.toPokemonInfoDomain() =
     PokemonInfoDomain(
         this.name,
@@ -25,13 +25,17 @@ fun List<Type>.toPokemonTypeDomain() = PokemonTypeDomain(this.get(0).type?.name)
 fun PokemonResult.toPokemonResultDomain() =
     PokemonResultDomain(this.count, this.next, this.previous, this.results.toListPokemonDomain())
 
-fun PokemonEntity.toPokemonEntityDomain() =
-    PokemonEntityDomain(this.name)
-
 fun PokemonEntity.toPokemonDomain() =
-    this.name?.let { PokemonDomain(it) }
+    PokemonDomain(this.id, this.name, this.weight, this.height, this.type)
 
-fun PokemonEntityDomain.toPokemonEntity() =
-    this.name?.let { PokemonEntity(it) }
+fun Pokemon.toPokemonEntity() = PokemonEntity(name = this.name)
 
-fun PokemonDomain.toPokemonDomainEntity() = PokemonEntityDomain(this.name)
+fun PokemonDomain.toPokemonEntity() =
+    PokemonEntity(this.id, this.name, this.weight, this.height, this.type)
+
+fun PokemonInfoDomain.toPokemonDomain() =
+    PokemonDomain(name = this.name!!, weight = this.weight, height = this.height, type = this.type!!.name)
+
+fun PokemonDomain.toPokemonInfoDomain() =
+    PokemonInfoDomain(name = this.name, weight = this.weight, height = this.height, type = PokemonTypeDomain(this.type),null)
+

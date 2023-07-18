@@ -7,9 +7,10 @@ import com.vyapp.pokemonapp.domain.model.PokemonInfoDomain
 import com.vyapp.pokemonapp.domain.model.PokemonResultDomain
 import kotlinx.coroutines.flow.Flow
 
-interface RemoteRepository {
+interface PokemonRepository {
 
     fun getPokemonResult(): Flow<PagingData<PokemonDomain>>
     suspend fun getPokemon(name: String): Flow<PokemonInfoDomain>
+    suspend fun getPokemonDb(name: String): Flow<PokemonDomain>
 
 }

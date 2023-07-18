@@ -18,6 +18,7 @@ import com.vyapp.pokemonapp.R
 import com.vyapp.pokemonapp.databinding.FragmentPokemonBinding
 import com.vyapp.pokemonapp.domain.model.PokemonInfoDomain
 import com.vyapp.pokemonapp.util.heightString
+import com.vyapp.pokemonapp.util.toPokemonDomain
 import com.vyapp.pokemonapp.util.typeString
 import com.vyapp.pokemonapp.util.weightString
 import kotlinx.coroutines.launch

@@ -3,11 +3,9 @@ package com.vyapp.pokemonapp.di.module
 import android.content.Context
 import androidx.room.Room
 import com.vyapp.pokemonapp.data.local.database.PokemonDatabase
-import com.vyapp.pokemonapp.data.local.repository.LocalRepositoryImp
 import com.vyapp.pokemonapp.data.remote.PokemonService
-import com.vyapp.pokemonapp.data.remote.repository.RemoteRepositoryImp
-import com.vyapp.pokemonapp.domain.repository.LocalRepository
-import com.vyapp.pokemonapp.domain.repository.RemoteRepository
+import com.vyapp.pokemonapp.data.repository.PokemonRepositoryImp
+import com.vyapp.pokemonapp.domain.repository.PokemonRepository
 import com.vyapp.pokemonapp.util.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -31,16 +29,14 @@ class DataModule(val context: Context) {
 
     @Provides
     @Singleton
-    fun provideRemoteRepository(api: PokemonService): RemoteRepository = RemoteRepositoryImp(api)
+    fun provideRemoteRepository(api: PokemonService, db: PokemonDatabase): PokemonRepository =
+        PokemonRepositoryImp(api, db)
 
     @Provides
     @Singleton
     fun providePokemonDatabase(_context: Context): PokemonDatabase =
-        Room.databaseBuilder(_context, PokemonDatabase::class.java, "pokemon").build()
+        Room.databaseBuilder(_context, PokemonDatabase::class.java, "pokemon")
+            .fallbackToDestructiveMigration().build()
 
-    @Provides
-    @Singleton
-    fun provideLocalRepository(database: PokemonDatabase): LocalRepository =
-        LocalRepositoryImp(database)
 
 }
