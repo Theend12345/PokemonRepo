@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/itemback"
+    android:background="@color/black_400"
     tools:context=".app.PokemonFragment">
 
     <LinearLayout
@@ -16,6 +16,8 @@
             android:id="@+id/pokemon_img"
             android:layout_width="300dp"
             android:layout_height="230dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/offline_img"
             android:layout_gravity="center"
             android:layout_marginVertical="50dp"
             android:background="@drawable/img_background" />

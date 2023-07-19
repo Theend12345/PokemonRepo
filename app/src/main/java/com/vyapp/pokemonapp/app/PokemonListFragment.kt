@@ -11,10 +11,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
+import androidx.paging.LoadStateAdapter
 import androidx.paging.PagingData
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -64,6 +67,18 @@ class PokemonListFragment : Fragment() {
 
         binding.rv.layoutManager = LinearLayoutManager(requireContext())
         binding.rv.adapter = adapter
+
+        adapter.addLoadStateListener { state ->
+            val refreshState = state.refresh
+            binding.progressBar.isVisible = refreshState== LoadState.Loading
+            if(refreshState is LoadState.Error){
+                Toast.makeText(requireContext(), refreshState.error.message, Toast.LENGTH_LONG).show()
+            }
+
+        }
+
+
+
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
 

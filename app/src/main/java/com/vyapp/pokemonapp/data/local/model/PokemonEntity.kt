@@ -8,7 +8,7 @@ import com.vyapp.pokemonapp.data.remote.model.Type
 @Entity(tableName = "pokemons")
 data class PokemonEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val id: Int = 1,
     val name: String,
     val weight: Int? = null,
     val height: Int? = null,
