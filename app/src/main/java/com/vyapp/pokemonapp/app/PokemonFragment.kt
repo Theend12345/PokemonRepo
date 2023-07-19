@@ -11,14 +11,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.vyapp.pokemonapp.R
 import com.vyapp.pokemonapp.databinding.FragmentPokemonBinding
 import com.vyapp.pokemonapp.domain.model.PokemonInfoDomain
-import com.vyapp.pokemonapp.util.heightString
-import com.vyapp.pokemonapp.util.typeString
-import com.vyapp.pokemonapp.util.weightString
+import com.vyapp.pokemonapp.util.infoStringFormat
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -39,14 +36,14 @@ class PokemonFragment : Fragment() {
         super.onStart()
 
         binding.backBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_pokemonFragment_to_pokemonListFragment)
+            requireActivity().onBackPressed()
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (activity?.applicationContext as App).appComponent.pokemonInject(this@PokemonFragment)
-        arguments?.getString("pokemonName")?.let { viewModel.fetchPokemonRemote(it) }
+        arguments?.getString("pokemonName")?.let { viewModel.fetchPokemon(it) }
     }
 
     override fun onCreateView(
@@ -63,7 +60,7 @@ class PokemonFragment : Fragment() {
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.pokemonRemote.collect {
+                viewModel.pokemon.collect {
                     when (it) {
                         is UIState.Loading -> {
                             binding.progressBar.visibility = View.VISIBLE
@@ -82,11 +79,25 @@ class PokemonFragment : Fragment() {
     }
 
     private fun bind(data: PokemonInfoDomain) {
+
         with(binding) {
             pokemonName.text = data.name?.uppercase()
-            pokemonHeight.text = data.height?.let { heightString(it) }
-            pokemonWeight.text = data.weight?.let { weightString(it) }
-            pokemonType.text = data.type?.name?.let { typeString(it) }
+            pokemonHeight.text = data.height?.let {
+                infoStringFormat(
+                    it,
+                    getString(R.string.CM),
+                    getString(R.string.height)
+                )
+            }
+            pokemonWeight.text = data.weight?.let {
+                infoStringFormat(
+                    it,
+                    getString(R.string.KG),
+                    getString(R.string.weight)
+                )
+            }
+            pokemonType.text =
+                data.type?.name?.let { infoStringFormat(it, null, getString(R.string.type)) }
             if (data.sprites != null)
                 Glide.with(requireContext()).load(data.sprites.frontDefault).into(pokemonImg)
         }

@@ -13,7 +13,7 @@ import com.vyapp.pokemonapp.util.*
 @ExperimentalPagingApi
 class PokemonRemoteMediator(
     private val pokemonDatabase: PokemonDatabase,
-    val pokemonService: PokemonService
+    private val pokemonService: PokemonService
 ) :
     RemoteMediator<Int, PokemonEntity>() {
 
@@ -28,8 +28,8 @@ class PokemonRemoteMediator(
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
                     val lastItem = state.lastItemOrNull()
+                    lastItem?.id?.plus(1)
                         ?: return MediatorResult.Success(endOfPaginationReached = true)
-                    LIMIT + lastItem.id
                 }
             }
 

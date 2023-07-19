@@ -26,8 +26,19 @@ fun PokemonDomain.toPokemonEntity() =
     PokemonEntity(this.id, this.name, this.weight, this.height, this.type)
 
 fun PokemonInfoDomain.toPokemonDomain() =
-    PokemonDomain(name = this.name!!, weight = this.weight, height = this.height, type = this.type!!.name)
+    PokemonDomain(
+        name = this.name!!,
+        weight = this.weight,
+        height = this.height,
+        type = this.type!!.name
+    )
 
 fun PokemonDomain.toPokemonInfoDomain() =
-    PokemonInfoDomain(name = this.name, weight = this.weight, height = this.height, type = PokemonTypeDomain(this.type),null)
+    PokemonInfoDomain(
+        name = this.name,
+        weight = this.weight,
+        height = this.height,
+        type = PokemonTypeDomain(this.type),
+        null
+    )
 

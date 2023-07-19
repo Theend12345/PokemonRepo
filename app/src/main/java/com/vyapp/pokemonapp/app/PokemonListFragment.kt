@@ -3,7 +3,6 @@ package com.vyapp.pokemonapp.app
 import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +16,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import androidx.paging.LoadStateAdapter
 import androidx.paging.PagingData
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -51,7 +49,7 @@ class PokemonListFragment : Fragment() {
         super.onCreate(savedInstanceState)
         (activity?.applicationContext as App).appComponent.pokemonListInject(this@PokemonListFragment)
 
-        viewModel.fetchPokemonRemoteList()
+        viewModel.fetchPokemonList()
     }
 
     override fun onCreateView(
@@ -70,9 +68,10 @@ class PokemonListFragment : Fragment() {
 
         adapter.addLoadStateListener { state ->
             val refreshState = state.refresh
-            binding.progressBar.isVisible = refreshState== LoadState.Loading
-            if(refreshState is LoadState.Error){
-                Toast.makeText(requireContext(), refreshState.error.message, Toast.LENGTH_LONG).show()
+            binding.progressBar.isVisible = refreshState == LoadState.Loading
+            if (refreshState is LoadState.Error) {
+                Toast.makeText(requireContext(), refreshState.error.message, Toast.LENGTH_LONG)
+                    .show()
             }
 
         }
